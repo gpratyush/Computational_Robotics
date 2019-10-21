@@ -1,0 +1,124 @@
+3c)
+State x,y,h is: 1,5,7
+State x,y,h is: 1,6,8
+State x,y,h is: 2,6,9
+State x,y,h is: 3,6,10
+State x,y,h is: 4,6,11
+State x,y,h is: 4,7,0
+State x,y,h is: 4,6,1
+State x,y,h is: 4,7,2
+State x,y,h is: 5,7,3
+State x,y,h is: 6,7,4
+State x,y,h is: 5,7,5
+State x,y,h is: 5,6,6
+Value at state: 1,5,7 is -252.98578675868467
+Value at state: 1,6,8 is -281.0953173696847
+Value at state: 2,6,9 is -312.3281291596847
+Value at state: 3,6,10 is -335.9201422596847
+Value at state: 4,6,11 is -373.24460125968477
+Value at state: 4,7,0 is -303.60511125968463
+Value at state: 4,6,1 is -337.33901125968464
+Value at state: 4,7,2 is -263.7100112596846
+Value at state: 5,7,3 is -181.90001125968465
+Value at state: 6,7,4 is -91.00001125968464
+Value at state: 5,7,5 is 9.999988740315363
+
+3h) and 3i)
+State x,y,h is: 1,5,7
+State x,y,h is: 1,4,8
+State x,y,h is: 2,4,7
+State x,y,h is: 2,3,8
+State x,y,h is: 3,3,9
+State x,y,h is: 4,3,10
+State x,y,h is: 5,3,11
+State x,y,h is: 5,4,0
+State x,y,h is: 5,5,1
+State x,y,h is: 5,6,2
+
+Time for Policy Iteration with P_e as 0 is 181.03121638298035
+
+4a,b,c)
+
+State x,y,h is: 1,5,7
+State x,y,h is: 1,4,8
+State x,y,h is: 2,4,7
+State x,y,h is: 2,3,8
+State x,y,h is: 3,3,9
+State x,y,h is: 4,3,10
+State x,y,h is: 5,3,11
+State x,y,h is: 5,4,0
+State x,y,h is: 5,5,1
+State x,y,h is: 5,6,2
+
+Time for Value Iteration with P_e as 0 is 165.76536011695862
+
+5a)
+
+State x,y,h is: 1,5,7
+State x,y,h is: 1,6,6
+State x,y,h is: 1,5,6
+State x,y,h is: 1,4,5
+State x,y,h is: 1,3,5
+State x,y,h is: 1,2,4
+State x,y,h is: 2,2,5
+State x,y,h is: 1,2,3
+State x,y,h is: 2,2,2
+State x,y,h is: 3,2,3
+State x,y,h is: 4,2,2
+State x,y,h is: 5,2,2
+State x,y,h is: 6,2,1
+State x,y,h is: 5,2,1
+State x,y,h is: 5,3,0
+State x,y,h is: 5,4,0
+State x,y,h is: 5,5,11
+State x,y,h is: 4,5,10
+State x,y,h is: 4,4,0
+State x,y,h is: 4,5,1
+State x,y,h is: 4,6,0
+State x,y,h is: 4,5,2
+State x,y,h is: 5,5,2
+State x,y,h is: 6,5,2
+State x,y,h is: 6,4,0
+State x,y,h is: 6,5,11
+State x,y,h is: 6,6,1
+State x,y,h is: 5,6,3
+
+Time for Policy Iteration with P_e as 0.25 is 205.44856333732605
+
+5b)
+p=0:
+
+State x,y,h is: 1,5,7
+State x,y,h is: 1,4,8
+State x,y,h is: 2,4,7
+State x,y,h is: 2,3,8
+State x,y,h is: 3,3,9
+State x,y,h is: 4,3,8
+State x,y,h is: 5,3,7
+State x,y,h is: 5,4,7
+State x,y,h is: 5,5,7
+State x,y,h is: 5,6,6
+
+Time: 262.24950313568115
+
+p=0.25
+
+State x,y,h is: 1,5,6
+State x,y,h is: 1,4,5
+State x,y,h is: 1,3,5
+State x,y,h is: 1,2,5
+State x,y,h is: 1,1,6
+State x,y,h is: 1,2,7
+State x,y,h is: 1,3,8
+State x,y,h is: 2,3,9
+State x,y,h is: 3,3,9
+State x,y,h is: 4,3,7
+State x,y,h is: 5,3,7
+State x,y,h is: 6,3,7
+State x,y,h is: 5,3,7
+State x,y,h is: 5,4,6
+State x,y,h is: 5,5,6
+State x,y,h is: 5,6,6
+
+Time: 258.3321764469147
+
