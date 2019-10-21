@@ -10,8 +10,11 @@ Original file is located at
 import numpy as np
 import random
 import math
+import time
 
 class State:
+    #State is a class == x,y,h. x is x-cordinate, y is y-cordinate and h is the orientation
+    #or header.
     def  __init__(self, x, y, h):
         self.x = x
         self.y = y
@@ -58,9 +61,9 @@ class Matrix:
        
     def set_state(self, new_state):
         self.state = new_state
-
+    
+    # returns pre rotation change -1 or 0 or 1 based on probability p_e
     def pre_rotation(self):
-        # returns pre rotation change -1 or 0 or 1
         v = random.random()
         #print("The pre rotation probability: " + str(v))
         if v < self.p_error:
@@ -70,8 +73,9 @@ class Matrix:
         else:
             return 0
     
+    #This method is only used as a helper to caluclate the probabilty of the next state
+    #given the input state and action.
     def test_move(self, action, error):
-        # no direct use... just for calculating probabilities of a transition
         h = (self.state.h + error) % 12
         multiplier = 1
         if h in self.horizontal_negative or h in self.vertical_negative:
@@ -88,10 +92,10 @@ class Matrix:
                 new_y += (multiplier*action[0])
         new_h = (h + action[1]) % 12
         return State(new_x, new_y, new_h)
-
+    
+    #answer to ques: 1)c)(using test_move) probability function (transfer function)
+    #Calculates the probability of new_state given initial state and action.
     def probability_new_state(self, input_action, new_state):
-        #answer to ques: 1)c)(using test_move)
-        #probability function (transfer function)
         if input_action[0] == 0:
             if self.state.equals(new_state):
                 return 1
@@ -109,10 +113,10 @@ class Matrix:
                     else:
                         probability += (1 - 2*self.p_error)
             return probability
-        
+    
+    #returns the next given input state, action and the p_error.
+    #ans to 1)d)    
     def move(self, action):
-        #moves from m.state and takes action (includes randomness m.p_error)
-        #ans to 1)d)
         h = (self.state.h + self.pre_rotation()) % 12
         multiplier = 1
         if h in self.horizontal_negative or h in self.vertical_negative:
@@ -129,10 +133,10 @@ class Matrix:
                 new_y += (multiplier*action[0])
         new_h = (h + action[1]) % 12
         return State(new_x, new_y, new_h)
-
+    
+    #returns list of tuples (next_state, Probability of next state, reward of this transition)
+    #for all possible states that are reachable from a given state. Takes into account p_error.
     def get_next_state_probabilities(self, initial_state, action):
-        #returns list of tuples (next_state, prob of that state, reward of this transition) for movement from a state given action
-        #uses p_error
         return_value = []
         self.set_state(initial_state)
         new_states = []
@@ -151,7 +155,8 @@ class Matrix:
             prob = self.probability_new_state(action, s)
             return_value.append((s, prob, self.get_reward(s)))
         return return_value
-            
+     
+    #Given co-ordinates, returns the reward.    
     def get_reward(self, input_state):
         x,y = input_state.x, input_state.y
         return self.reward_dict[(x,y)]
@@ -159,9 +164,9 @@ class Matrix:
 #so define m = p_error, inital state(x ,y, h) 
 # then m.reward_dict= reward dictionary and you're set
 
-#This part deals with Question 2 and setting the reward map.
-
 goal_state = State(5,6,None)
+
+#This part deals with Question 2 and setting the reward map.
 def make_reward_map():
     d = {}
     for i in range(8):
@@ -179,18 +184,16 @@ def make_reward_map():
     d[(3,4)] = -10
     return d
 
-#you're set
-
 #Question 3
 #Algorithm for Part 3 initial question. We are using Manhattan distance as the metric. The algorithm just 
-#returns the action which corresponds to the lowest Manhattan distance out of 6 possible actions. Unless the agent
-#is in the goal state, it must move.
-
+#returns the action which corresponds to the lowest Manhattan distance out of 6 possible actions.
+#We use 6 possible actions and not 7 because unless the agent is at the goal state, it is forced to move.
 def manhattan_distance(current_state):
     return abs(current_state.x - goal_state.x) + abs(current_state.y - goal_state.y)
 
+#gives initial policy as the action that minimizes the distance left
 def initial_policy(current_state):
-    #gives initial policy as the action that minimizes the distance left
+    
     if current_state.x == goal_state.x and current_state.y == goal_state.y:
         return [0,0]
     actions = ([1,1],[1,0],[1,-1],[-1,1],[-1,0],[-1,-1])
@@ -202,9 +205,10 @@ def initial_policy(current_state):
     index = distances.index(min(distances))
     return actions[index]   
 
+#Give an initial state and a policy dictionary, the function outputs the states that the agent has
+#been in on its way to the goal state. If the agent takes more than 100 steps, the method exits. This 
+#limit can be changed by the user.
 def plot_trajectory(initial_state, policy_dict):
-    #plots movement of state from initial under policy_dict
-    #returns list of states traversed
     s = initial_state
     m.set_state(initial_state)
     states = []
@@ -221,7 +225,7 @@ def plot_trajectory(initial_state, policy_dict):
             steps -= 1
     return states
 
-#Value iteration Question 4
+#Value iteration
 import copy
 
 def value_distance(V1, V2):
@@ -230,6 +234,7 @@ def value_distance(V1, V2):
         diff += abs(V1[k] - V2[k])
     return diff
 
+#Answer for 4a
 def value_iteration(gamma, p_error):
     m.p_error = p_error
     V = {}
@@ -252,6 +257,8 @@ def value_iteration(gamma, p_error):
         step += 1
         print(step)
 
+#Given the list of values for each state and a discount factor we get the policy associated with 
+#these parameters. Answer for 3f
 def policy_from_value(V, gamma):
     policy={}    
     for s in m.statelist:
@@ -265,8 +272,8 @@ def policy_from_value(V, gamma):
         policy[(s.x,s.y,s.h)] = best_action
     return policy
 
-def policy_evaluation(policy, gamma):
-    
+#Answer for 3d
+def policy_evaluation(policy, gamma):    
     V = {}
     for s in m.statelist:
       V[(s.x,s.y,s.h)]=0
@@ -292,6 +299,7 @@ def policy_difference(P1, P2):
             return False
     return True
 
+#Answer for 3g
 def policy_iteration(init_policy, gamma, p_error):
     m.p_error=p_error
     policy = copy.deepcopy(init_policy)
@@ -311,6 +319,11 @@ def policy_iteration(init_policy, gamma, p_error):
 
 ''' definitions over: lets solve problems '''
 
+# 1a) in pdf
+# 1b) in pdf
+# 1c) probability_new_state(self, input_action, new_state) defined above
+# 1d) move(self, action) defined above
+# 2a) make_reward_map() defined above
 
 # first define m
 p_error=0
@@ -319,26 +332,57 @@ m=Matrix(p_error,state)
 m.reward_dict = make_reward_map() 
 #we're set
 
+# 3a)
 init_policy = {}
 
 for s in m.statelist:
+    #The method initial_policy is based on the Manhattan Distance as mentioned
+    #previously.
     a = initial_policy(s)
     init_policy[(s.x,s.y,s.h)] = a
 
 #we have initial policy
 
-states = plot_trajectory(State(3,3,0), init_policy)
+# 3b and 3c. This function lists the order of states taken to get to the 
+# goal state.
+states = plot_trajectory(State(1,6,6), init_policy)
 for s in states:
     s.print_state()
-    
-V, _ = value_iteration(0.9, 0.25)    
-trajectory = plot_trajectory(State(1,6,6), policy_from_value(V, 0.9))       
-for t in trajectory:
-    t.print_state()
-    
 
-policy = policy_iteration(init_policy, 0.9, 0.25)
+# 3d) policy_evaluation(policy, gamma) defined above
+# 3e) 
+v,_ =policy_evaluation(init_policy,0.9)
+for s in states:
+    print("Value at state: {},{},{} is {}".format(s.x,s.y,s.h,v[(s.x,s.y,s.h)]))
+
+# 3f) policy_from_value(V, gamma) defined above
+# 3g and 3h)
+start = time.time()
+p_error=0.25
+policy = policy_iteration(init_policy, 0.9, p_error)
 trajectory = plot_trajectory(State(1,6,6), policy)       
 for t in trajectory:
     t.print_state()
+end = time.time()
+
+# 3i) 
+print("Time for Policy Iteration with P_e as {} is {}".format(p_error,end-start))
+ 
+# 4a and 4b) 
+start = time.time()
+p_error=0
+V, _ = value_iteration(0.9, p_error)    
+trajectory = plot_trajectory(State(1,6,6), policy_from_value(V, 0.9))       
+for t in trajectory:
+    t.print_state()
+end = time.time()
+
+# 4c) 
+print("Time for Value Iteration with P_e as {} is {}".format(p_error,end-start))
+
+# 5a) Just change p_error above to 0.25
+# 5b) Has a separate file called mdp5b.py
+# 5c) is in the pdf
+
+#=================THANKS=================#
 
