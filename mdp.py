@@ -49,8 +49,8 @@ class Matrix:
         self.horizontal_negative = [10,9,8]
         self.reward_dict = {} #dictionary
         state_space = []
-        for i in range(m.length):
-          for j in range(m.width):
+        for i in range(self.length):
+          for j in range(self.width):
             for h in range(12):
               s = State(i,j,h)
               state_space.append(s)
@@ -179,10 +179,6 @@ def make_reward_map():
     d[(3,4)] = -10
     return d
 
-p_error=0
-state=State(0,0,0)
-m=Matrix(p_error,state)
-m.reward_dict = make_reward_map()
 #you're set
 
 #Question 3
@@ -206,14 +202,6 @@ def initial_policy(current_state):
     index = distances.index(min(distances))
     return actions[index]   
 
-init_policy = {}
-
-for s in m.statelist:
-    a = initial_policy(s)
-    init_policy[(s.x,s.y,s.h)] = a
-
-#we have initial policy
-
 def plot_trajectory(initial_state, policy_dict):
     #plots movement of state from initial under policy_dict
     #returns list of states traversed
@@ -233,10 +221,6 @@ def plot_trajectory(initial_state, policy_dict):
             steps -= 1
     return states
 
-states = plot_trajectory(State(3,3,0), init_policy)
-for s in states:
-    s.print_state()
-
 #Value iteration Question 4
 import copy
 
@@ -245,14 +229,12 @@ def value_distance(V1, V2):
     for k in V1:
         diff += abs(V1[k] - V2[k])
     return diff
-    
-
-V = {}
-for s in m.statelist:
-  V[(s.x,s.y,s.h)]=0
 
 def value_iteration(gamma, p_error):
     m.p_error = p_error
+    V = {}
+    for s in m.statelist:
+        V[(s.x,s.y,s.h)]=0
     step = 0
     while step < 1000:
         V_prev = copy.deepcopy(V)
@@ -270,9 +252,6 @@ def value_iteration(gamma, p_error):
         step += 1
         print(step)
 
-print(V[0,1,0])
-print(V_prev[0,1,0])
-
 def policy_from_value(V, gamma):
     policy={}    
     for s in m.statelist:
@@ -285,11 +264,6 @@ def policy_from_value(V, gamma):
         best_action = actions[max_index]
         policy[(s.x,s.y,s.h)] = best_action
     return policy
-
-V, V_prev = value_iteration(0.9, 0.25)    
-trajectory = plot_trajectory(State(1,6,6), policy_from_value(V, 0.9))       
-for t in trajectory:
-    t.print_state()
 
 def policy_evaluation(policy, gamma):
     
@@ -307,10 +281,6 @@ def policy_evaluation(policy, gamma):
             return V, V_prev
         step += 1
         #print(step)
-
-V, V_prev = policy_evaluation(init_policy, 0.9)
-print(V[0,1,0])
-print(V_prev[0,1,0])
 
 def policy_difference(P1, P2):
     for k in P1:
@@ -339,7 +309,36 @@ def policy_iteration(init_policy, gamma, p_error):
             step += 1
             print(step)
 
+''' definitions over: lets solve problems '''
+
+
+# first define m
+p_error=0
+state=State(0,0,0) #initial state
+m=Matrix(p_error,state) 
+m.reward_dict = make_reward_map() 
+#we're set
+
+init_policy = {}
+
+for s in m.statelist:
+    a = initial_policy(s)
+    init_policy[(s.x,s.y,s.h)] = a
+
+#we have initial policy
+
+states = plot_trajectory(State(3,3,0), init_policy)
+for s in states:
+    s.print_state()
+    
+V, _ = value_iteration(0.9, 0.25)    
+trajectory = plot_trajectory(State(1,6,6), policy_from_value(V, 0.9))       
+for t in trajectory:
+    t.print_state()
+    
+
 policy = policy_iteration(init_policy, 0.9, 0.25)
 trajectory = plot_trajectory(State(1,6,6), policy)       
 for t in trajectory:
     t.print_state()
+
